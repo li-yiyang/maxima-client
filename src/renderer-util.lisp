@@ -98,7 +98,9 @@
 
 (defun find-replacement-text-styles (stream string &key text-style)
   (clim:with-sheet-medium (medium stream)
-    (clim-freetype::find-replacement-fonts (clim:port medium) (or text-style (clim:medium-text-style stream)) string)))
+    ;; TODO: should I use `merge-text-styles' instead? 
+    ;; (clim-freetype::find-replacement-fonts (clim:port medium) (or text-style (clim:medium-text-style stream)) string)))
+    (or text-style (clim:medium-text-style stream))))
 
 (defun render-formatted-with-replacement (stream fmt &rest args)
   (with-aligned-rendering (stream)

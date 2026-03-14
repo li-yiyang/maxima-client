@@ -121,7 +121,10 @@
   (alexandria:once-only (stream font)
     (alexandria:with-gensyms (body-fn)
       `(labels ((,body-fn ()
-                  (clim:with-text-style (,stream (clim-freetype:make-font-replacement-text-style (first ,font) (second ,font) *font-size* ,replacement))
+                  ;; TODO: looks like `merge-text-styles' to me
+                  ;; (clim:with-text-style (,stream (clim-freetype:make-font-replacement-text-style (first ,font) (second ,font) *font-size* ,replacement)
+                  ;;   ,@body)
+                  (clim:with-text-style (,stream (clim:merge-text-styles (first ,font) (second ,font)))
                     ,@body)))
          ,(if size
               `(let ((*font-size* ,size))

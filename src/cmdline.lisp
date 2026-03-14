@@ -418,7 +418,7 @@ ACCEPT. The caller can then return this from the toplevel ACCEPT.")
                                           nil)
                              :insert-default insert-default)))
     (etypecase result
-      (maxima-input-expression 
+      (maxima-input-expression
        (values (make-instance 'maxima-native-expr
                               :expr (third (maxima-input-expression/expr result))
                               :src (maxima-input-expression/src result))
@@ -620,25 +620,31 @@ ACCEPT. The caller can then return this from the toplevel ACCEPT.")
 
 
 (defun compute-font-dpi ()
-  (let* ((display (clim-clx:clx-port-display (clim:find-port)))
-         (db (xlib:root-resources (xlib:display-default-screen display)))
-         (res (xlib:get-resource db :|dpi| :|Dpi| '(:xft) '(:|Xft|)))
-         (default-sizes '(:normal 14 :tiny 8 :very-small 10 :small 12 :large 18 :very-large 20 :huge 24)))
-    (when res
-      (alexandria:when-let ((font-size (parse-integer res :junk-allowed t)))
-        (let* ((default-dpi 96)
-               (font-scale (/ font-size default-dpi)))
-          (setq climi::+font-sizes+
-                (loop
-                  for (type size) on default-sizes by #'cddr
-                  append (list type (* size font-scale)))))))))
+  ;; Note: this seems to patch `climi::+font-sizes+',
+  ;; should this be `clim:text-size' instead?
+  ;; Just disable this for now and it should load
+  ;; (let* ((display (clim-clx:clx-port-display (clim:find-port)))
+  ;;        (db (xlib:root-resources (xlib:display-default-screen display)))
+  ;;        (res (xlib:get-resource db :|dpi| :|Dpi| '(:xft) '(:|Xft|)))
+  ;;        (default-sizes '(:normal 14 :tiny 8 :very-small 10 :small 12 :large 18 :very-large 20 :huge 24)))
+  ;;   (when res
+  ;;     (alexandria:when-let ((font-size (parse-integer res :junk-allowed t)))
+  ;;       (let* ((default-dpi 96)
+  ;;              (font-scale (/ font-size default-dpi)))
+  ;;         (setq climi::+font-sizes+
+  ;;               (loop
+  ;;                 for (type size) on default-sizes by #'cddr
+  ;;                 append (list type (* size font-scale))))
+  ;;         ))))
+  )
 
 (defvar *maxima-main-frame* nil)
 
 (defun maxima-client ()
   (let ((fonts-location (or *font-directory*
                             (merge-pathnames #p"fonts/tex/" (asdf:component-pathname (asdf:find-system :maxima-client))))))
-    (mcclim-fontconfig:app-font-add-dir fonts-location))
+    ;; (mcclim:app-font-add-dir fonts-location)
+    )
   (with-maxima-package
     (maxima::initialize-runtime-globals))
   (setq *debugger-hook* nil)
