@@ -21,7 +21,7 @@
                                      (:file "util")
                                      (:file "renderer-util")
                                      (:file "wrap")
-                                     (:file "markup")
+                                     (:file "markup") ;; markup-new?
                                      (:file "renderer")
                                      (:file "disp")
                                      (:file "popup")

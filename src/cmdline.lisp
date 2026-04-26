@@ -597,6 +597,7 @@ ACCEPT. The caller can then return this from the toplevel ACCEPT.")
                                                :cmd cmd
                                                :content "Error from lisp")
                                 stream)
+             (format stream "~&Failed to read frame command: ~%")
              (format stream "Error from Lisp: ~a" (cadr eval-ret))
              nil)
             (*delay-command*
@@ -640,31 +641,36 @@ ACCEPT. The caller can then return this from the toplevel ACCEPT.")
 
 (defvar *maxima-main-frame* nil)
 
+#+mcclim-coca
+(mcclim-coca.cocoa::define-objc-global-variable
+    maxima-client-font-loaded-p
+    (let ((fonts-location (or *font-directory*
+                              (merge-pathnames
+                               #p"fonts/tex/"
+                               (asdf:component-pathname
+                                (asdf:find-system :maxima-client))))))
+      (dolist (font (uiop:directory-files fonts-location) t)
+        (mcclim-coca.cocoa:load-font-file font nil))))
+
 (defun maxima-client ()
   ;; Load TeX fonts
   #+mcclim-coca
-  (let ((fonts-location (or *font-directory*
-                            (merge-pathnames
-                             #p"fonts/tex/"
-                             (asdf:component-pathname
-                              (asdf:find-system :maxima-client))))))
-    (dolist (font (uiop:directory-files fonts-location))
-      (mcclim-coca.cocoa:load-font-file font nil)))
+  (maxima-client-font-loaded-p)
   (with-maxima-package
     (maxima::initialize-runtime-globals))
   (setq *debugger-hook* nil)
   ;; Set up default plot options
   ;;(setf (getf maxima::*plot-options* :plot_format) 'maxima::$clim)
   ;;
-  (compute-font-dpi)
+  ;; (compute-font-dpi)
   ;;
-  (let ((s (getf climi::+font-sizes+ :normal))
-        (adjustment 1.16))
-    ;; The maths font is smaller than the standard font by some fixed
-    ;; ratio, so we simply adjust the default size to accommodate
-    ;; this.
-    (setq maxima::$font_size (* s adjustment))
-    (setq *font-size* (* s adjustment)))
+  ;; (let ((s (getf climi::+font-sizes+ :normal))
+  ;;       (adjustment 1.16))
+  ;;   ;; The maths font is smaller than the standard font by some fixed
+  ;;   ;; ratio, so we simply adjust the default size to accommodate
+  ;;   ;; this.
+  ;;   (setq maxima::$font_size (* s adjustment))
+  ;;   (setq *font-size* (* s adjustment)))
   (let* ((graft (clim:find-graft))
          (w (clim:graft-width graft))
          (h (clim:graft-height graft))

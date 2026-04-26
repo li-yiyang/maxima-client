@@ -49,8 +49,13 @@
   (let ((s (text-link-url/src url))
         (stream (find-interactor-pane)))
     (format stream "Opening URL: ~a" s)
-    (bordeaux-threads:make-thread (lambda ()
-                                    (uiop/run-program:run-program (list "xdg-open" s))))))
+    (bordeaux-threads:make-thread
+     #+mcclim-coca
+     (lambda ()
+       (uiop:run-program (list "open" s)))
+     #-mcclim-coca
+     (lambda ()
+       (uiop/run-program:run-program (list "xdg-open" s))))))
 
 (clim:define-presentation-to-command-translator select-url
     (text-link-url open-url text-commands)

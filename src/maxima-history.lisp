@@ -58,7 +58,8 @@
 (defmethod drei-syntax:additional-command-tables append ((drei drei:drei-area) (table maxima-interactor-command-table))
   '(maxima-input-editor-table))
 
-(defclass maxima-interactor-editing-stream (clim:standard-input-editing-stream)
+(defclass maxima-interactor-editing-stream (clim:standard-input-editing-stream
+                                            drei:drei-input-editing-mixin)
   ())
 
 (defmethod climi::invoke-with-input-editing ((stream maxima-interactor-pane) continuation input-sensitizer initial-contents class)
