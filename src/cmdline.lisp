@@ -641,10 +641,15 @@ ACCEPT. The caller can then return this from the toplevel ACCEPT.")
 (defvar *maxima-main-frame* nil)
 
 (defun maxima-client ()
+  ;; Load TeX fonts
+  #+mcclim-coca
   (let ((fonts-location (or *font-directory*
-                            (merge-pathnames #p"fonts/tex/" (asdf:component-pathname (asdf:find-system :maxima-client))))))
-    ;; (mcclim:app-font-add-dir fonts-location)
-    )
+                            (merge-pathnames
+                             #p"fonts/tex/"
+                             (asdf:component-pathname
+                              (asdf:find-system :maxima-client))))))
+    (dolist (font (uiop:directory-files fonts-location))
+      (mcclim-coca.cocoa:load-font-file font nil)))
   (with-maxima-package
     (maxima::initialize-runtime-globals))
   (setq *debugger-hook* nil)

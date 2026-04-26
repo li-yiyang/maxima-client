@@ -4,7 +4,8 @@
   :license "BSD"
   :description "Maxima CLIM client"
   :depends-on (:alexandria
-               :mcclim
+               :clim
+               :drei-mcclim
                :log4cl
                :trivial-gray-streams
                :trivial-arguments

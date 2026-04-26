@@ -118,6 +118,7 @@
       rec))
 
 (defmacro with-font ((stream font &optional size replacement) &body body)
+  (declare (ignore replacement))
   (alexandria:once-only (stream font)
     (alexandria:with-gensyms (body-fn)
       `(labels ((,body-fn ()
